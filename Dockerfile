@@ -2,7 +2,7 @@ FROM ubuntu:14.04
 
 MAINTAINER FND <fndemers@gmail.com>
 
-ENV PROJECTNAME=SL4A
+ENV PROJECTNAME=ANDROID_STUDIO
 
 # Working Directory
 ENV WORKDIRECTORY /home/ubuntu
@@ -10,6 +10,10 @@ ENV WORKDIRECTORY /home/ubuntu
 # Access SSH login
 ENV USERNAME=ubuntu
 ENV PASSWORD=ubuntu
+
+ENV ANDROID_TOOLS=tools_r25.2.5-linux.zip
+ENV ANDROID_SDK=android-sdk_r24.3.3-linux.tgz
+ENV ANDROID_STUDIO=android-studio-ide-171.4443003-linux.zip
 
 RUN apt-get update
 
