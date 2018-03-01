@@ -91,6 +91,12 @@ RUN apt install -y xauth vim-gtk
 # Fournir accès complet à Android (REVOIR)
 RUN chown $USERNAME -R /opt
 
+RUN apt-get install -y qemu-kvm libvirt-bin ubuntu-vm-builder bridge-utils
+
+RUN adduser $USERNAME libvirtd
+
+RUN apt-get install -y virt-manager
+
 ## Clean up when done
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
