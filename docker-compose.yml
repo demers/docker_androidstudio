@@ -4,6 +4,7 @@ services:
   androidstudio:
     build: .
     image: androidstudio
+    privileged: true
     container_name: androidstudio
     volumes:
       - "data_work:/home/ubuntu/work"

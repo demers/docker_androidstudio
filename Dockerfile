@@ -97,6 +97,25 @@ RUN adduser $USERNAME libvirtd
 
 RUN apt-get install -y virt-manager
 
+RUN apt install -y git
+
+# Installation de https://github.com/kevinwallace/qemu-docker
+# qui permet d'avoir accès à la virtualisation KVM.
+RUN cd /root \
+    && git clone https://github.com/kevinwallace/qemu-docker.git \
+    && mv -f qemu-docker qemu \
+    && chmod +x /root/qemu/*.sh \
+    && echo "/root/qemu/kvm-mknod.sh" >> /root/cmd.sh \
+    && echo "chown root:$USERNAME /dev/kvm" >> /root/cmd.sh \
+	&& echo "/usr/sbin/kvm-ok" >> /root/cmd.sh \
+    && chmod +x /root/cmd.sh
+
+# Rendre exécutable /root/cmd.sh à partir du compte $USERNAME
+RUN echo "$USERNAME ALL = (root) NOPASSWD: /root/cmd.sh" >> /etc/sudoers
+
+# Exécuter /root/cmd.sh au moment de la connexion au compte $USERNAME
+RUN echo "sudo /root/cmd.sh" >> ${WORKDIRECTORY}/.bash_profile
+
 ## Clean up when done
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -125,4 +144,3 @@ RUN chown ${USERNAME} ${WORKDIRECTORY}/.bash_profile
 
 # Start SSHD server...
 CMD ["/usr/sbin/sshd", "-D"]
-
