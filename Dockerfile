@@ -122,6 +122,9 @@ RUN echo "$USERNAME ALL = (root) NOPASSWD: /root/cmd.sh" >> /etc/sudoers
 # Exécuter /root/cmd.sh au moment de la connexion au compte $USERNAME
 RUN echo "sudo /root/cmd.sh" >> ${WORKDIRECTORY}/.bash_profile
 
+# Fournir accès complet à Android (REVOIR)
+RUN chown $USERNAME -R /opt
+
 ## Clean up when done
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -130,9 +133,6 @@ RUN apt-get clean && \
 EXPOSE 5037
 EXPOSE 5554
 EXPOSE 5555
-
-ENV TZ=America/Toronto
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Standard SSH port
 EXPOSE 22
@@ -150,6 +150,11 @@ RUN echo "export PS1=\"\\e[0;31m $PROJECTNAME\\e[m \$PS1\"" >> ${WORKDIRECTORY}/
 RUN echo "export ANDROID_HOME=\"/opt/android-sdk-linux\"" >> ${WORKDIRECTORY}/.bash_profile
 RUN echo "export PATH=\"\${PATH}:\${ANDROID_HOME}/tools:\${ANDROID_HOME}/platform-tools:\${ANDROID_HOME}/tools/bin:/opt/android-studio/bin\"" >> ${WORKDIRECTORY}/.bash_profile
 RUN chown ${USERNAME} ${WORKDIRECTORY}/.bash_profile
+
+RUN mkdir -p ${WORKDIRECTORY}/.android \
+    && chown ${USERNAME} ${WORKDIRECTORY}/.android \
+    && touch ${WORKDIRECTORY}/.android/repositories.cfg \
+    && chown ${USERNAME} ${WORKDIRECTORY}/.android/repositories.cfg
 
 # Start SSHD server...
 CMD ["/usr/sbin/sshd", "-D"]
