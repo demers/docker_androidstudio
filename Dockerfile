@@ -30,6 +30,12 @@ RUN adduser --quiet --disabled-password --shell /bin/bash --home /home/${USERNAM
 # Set password for the jenkins user (you may want to alter this).
 RUN echo "$USERNAME:$PASSWORD" | chpasswd
 
+RUN apt-get clean && apt-get -y update && apt-get install -y locales && locale-gen fr_CA.UTF-8
+ENV TZ=America/Toronto
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt install -y fish
+
 # Installation Java.
 # Open JDK
 #RUN apt-get install -qy --no-install-recommends python-dev default-jdk
